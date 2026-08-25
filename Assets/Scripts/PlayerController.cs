@@ -8,11 +8,12 @@ public class Playercontroller : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 movement;
     private SpriteRenderer spriteRenderer;
+    private Animator animator;
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
-
+        animator = GetComponent<Animator>();
     }
 
     public void OnMove(InputValue value)
@@ -24,6 +25,9 @@ public class Playercontroller : MonoBehaviour
             spriteRenderer.flipX = movement.x < 0;
         }
 
+        //Pasamos el movimiento del animator si esta en 0 o en 1
+
+        animator.SetFloat("Speed", movement.magnitude);
        
     }
 
