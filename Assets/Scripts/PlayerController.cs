@@ -7,9 +7,10 @@ public class Playercontroller : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 movement;
-
+    private SpriteRenderer spriteRenderer;
     private void Awake()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
 
     }
@@ -17,6 +18,11 @@ public class Playercontroller : MonoBehaviour
     public void OnMove(InputValue value)
     {
         movement = value.Get<Vector2>();
+
+        if (movement.x != 0)
+        {
+            spriteRenderer.flipX = movement.x < 0;
+        }
 
        
     }
