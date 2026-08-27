@@ -1,80 +1,94 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
+    [Header("Estadísticas del Enemigo")]
+    [SerializeField] private float speed = 3f;
+    [SerializeField] private float maxHealth = 50f;
 
-    [Header("Configuracion de Vida")]
-    [SerializeField] private float maxHealth = 100f;
-    [SerializeField] private Slider healthBar;
+    [Header("UI (Opcional)")]
+    [SerializeField] private UnityEngine.UI.Slider healthBar;
 
     private float currentHealth;
-    private Animator animator;
-    private Collider2D enemyCollider;
-    private Rigidbody2D rb;
-    private bool isDead = false;
-
-    private void Awake()
-    {
-        animator = GetComponent<Animator>();
-        enemyCollider = GetComponent<Collider2D>();
-        rb = GetComponent<Rigidbody2D>();
-    }
+    private Transform playerTransform;
+    private SpriteRenderer spriteRenderer;
 
     private void Start()
     {
         currentHealth = maxHealth;
 
-        if (healthBar != null){
+        if (healthBar != null)
+        {
             healthBar.maxValue = maxHealth;
-            healthBar.value = currentHealth;   
+            healthBar.value = currentHealth;
+        }
+
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Busca al Player automáticamente en cuanto el WaveSpawner crea al esqueleto
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+        {
+            playerTransform = playerObj.transform;
         }
     }
 
-    // Metodo que llama el proyectil al chocar
-    public void TakeDamage(float damage)
+    private void Update()
     {
-        if (isDead) return;
+        // Se mueve hacia el jugador en cada frame
+        if (playerTransform != null)
+        {
+            MoveTowardsPlayer();
+        }
+    }
 
-        currentHealth -= damage;
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            // Busca el script PlayerHealth en el objeto que tocó
+            PlayerHealth player = collision.GetComponent<PlayerHealth>();
 
-        //Actualizar el Slider de vida
+            if (player != null)
+            {
+                player.TakeDamage(10f); // Quita 10 de vida al jugador
+            }
+        }
+    }
+
+    private void MoveTowardsPlayer()
+    {
+        // Movimiento constante
+        transform.position = Vector2.MoveTowards(
+            transform.position,
+            playerTransform.position,
+            speed * Time.deltaTime
+        );
+
+        // Voltear el sprite según la posición del jugador
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.flipX = playerTransform.position.x < transform.position.x;
+        }
+    }
+
+    public void TakeDamage(float amount)
+    {
+        currentHealth -= amount;
+
         if (healthBar != null)
         {
             healthBar.value = currentHealth;
         }
 
-        // Si la vida llega a 0, muere
         if (currentHealth <= 0)
         {
             Die();
-
         }
     }
 
     private void Die()
     {
-        isDead = true;
-
-        //Ocultar la barra de vida
-        if (healthBar != null)
-        {
-
-            healthBar.gameObject.SetActive(false);
-        }
-
-        //Desactivar colisiones y fisicas para que los proyectiles ya no le peguen
-        if (enemyCollider != null) enemyCollider.enabled = false;
-        if (rb != null) rb.simulated = false;
-
-        //Activar la animacion de muerte
-        if (animator != null)
-        {
-            animator.SetTrigger("IsDead");
-        }
-
-        //Destruir el gambeobject 
-        Destroy(gameObject, 0.6f);
+        Destroy(gameObject);
     }
 }
