@@ -6,6 +6,11 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float speed = 3f;
     [SerializeField] private float maxHealth = 50f;
 
+    [Header("Ataque al Jugador")]
+    [SerializeField] private float attackDamage = 10f;
+    [SerializeField] private float attackCooldown = 1f; // Tiempo en segundos entre cada golpe
+    private float lastAttackTime;
+
     [Header("UI (Opcional)")]
     [SerializeField] private UnityEngine.UI.Slider healthBar;
 
@@ -25,7 +30,7 @@ public class Enemy : MonoBehaviour
 
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Busca al Player automáticamente en cuanto el WaveSpawner crea al esqueleto
+        // Busca al Player automáticamente en la escena
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
@@ -35,35 +40,15 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        // Se mueve hacia el jugador en cada frame
         if (playerTransform != null)
         {
             MoveTowardsPlayer();
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        
-
-        if (collision.CompareTag("Player"))
-        {
-            PlayerHealth player = collision.GetComponent<PlayerHealth>();
-            if (player != null)
-            {
-                player.TakeDamage(10f);
-                
-            }
-            else
-            {
-                
-            }
-        }
-    }
-
     private void MoveTowardsPlayer()
     {
-        // Movimiento constante
+        // Movimiento hacia la posición del jugador
         transform.position = Vector2.MoveTowards(
             transform.position,
             playerTransform.position,
@@ -74,6 +59,38 @@ public class Enemy : MonoBehaviour
         if (spriteRenderer != null)
         {
             spriteRenderer.flipX = playerTransform.position.x < transform.position.x;
+        }
+    }
+
+    // Primer impacto al chocar los colliders
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            TryAttack(collision.gameObject);
+        }
+    }
+
+    // Mantiene el daño si el enemigo sigue pegado/empujando al jugador
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            TryAttack(collision.gameObject);
+        }
+    }
+
+    private void TryAttack(GameObject playerObj)
+    {
+        // Solo ataca si ya pasó el tiempo de cooldown desde el último golpe
+        if (Time.time >= lastAttackTime + attackCooldown)
+        {
+            PlayerHealth player = playerObj.GetComponent<PlayerHealth>();
+            if (player != null)
+            {
+                player.TakeDamage(attackDamage);
+                lastAttackTime = Time.time;
+            }
         }
     }
 
