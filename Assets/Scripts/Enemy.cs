@@ -44,14 +44,19 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        
+
         if (collision.CompareTag("Player"))
         {
-            // Busca el script PlayerHealth en el objeto que tocó
             PlayerHealth player = collision.GetComponent<PlayerHealth>();
-
             if (player != null)
             {
-                player.TakeDamage(10f); // Quita 10 de vida al jugador
+                player.TakeDamage(10f);
+                
+            }
+            else
+            {
+                
             }
         }
     }
