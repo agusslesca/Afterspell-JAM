@@ -422,7 +422,19 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Sheep_Grass_0: 2319856288088244163
+      Sheep_Grass_1: -3562576923617104382
+      Sheep_Grass_10: 5439255145328125195
+      Sheep_Grass_11: -8736350461500244166
+      Sheep_Grass_2: -7349116212589438002
+      Sheep_Grass_3: -4662078214707794950
+      Sheep_Grass_4: -6617081139439527395
+      Sheep_Grass_5: -6189691028752884913
+      Sheep_Grass_6: 7296908222152865420
+      Sheep_Grass_7: -2352777100355612254
+      Sheep_Grass_8: -3659949348702606643
+      Sheep_Grass_9: 5630160346097760845
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

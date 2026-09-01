@@ -272,7 +272,13 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Gold Stone 3_Highlight_0: 7776672770353617358
+      Gold Stone 3_Highlight_1: -3566093463951699949
+      Gold Stone 3_Highlight_2: -2514194038861795929
+      Gold Stone 3_Highlight_3: -612701504170294816
+      Gold Stone 3_Highlight_4: 7572666312143429020
+      Gold Stone 3_Highlight_5: 4342322966337927656
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

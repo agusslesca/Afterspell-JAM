@@ -247,7 +247,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Clouds_01_0: 9020042864413288398
+      Clouds_01_1: 1053554404261736113
+      Clouds_01_2: 1472440742951053426
+      Clouds_01_3: 9039294180167352665
+      Clouds_01_4: 6409171767555602876
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

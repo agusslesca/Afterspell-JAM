@@ -272,7 +272,13 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Gold_Resource_Highlight_0: -1680025735427158449
+      Gold_Resource_Highlight_1: 1940467487000063103
+      Gold_Resource_Highlight_2: 7409589607425317397
+      Gold_Resource_Highlight_3: -1854372891051383256
+      Gold_Resource_Highlight_4: 7524602356359158002
+      Gold_Resource_Highlight_5: -8353110230701919887
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

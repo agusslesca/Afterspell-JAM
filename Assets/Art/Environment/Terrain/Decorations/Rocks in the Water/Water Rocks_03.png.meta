@@ -522,7 +522,23 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Water Rocks_03_0: 8384835515757780555
+      Water Rocks_03_1: 2350540041187290109
+      Water Rocks_03_10: -3625518646778956039
+      Water Rocks_03_11: 4238991538242509886
+      Water Rocks_03_12: 5528114269818808261
+      Water Rocks_03_13: 6390647827179591045
+      Water Rocks_03_14: -5304205338187861626
+      Water Rocks_03_15: 65037300474577770
+      Water Rocks_03_2: 7830442535718679565
+      Water Rocks_03_3: 1107704702327347289
+      Water Rocks_03_4: 5638308246859435684
+      Water Rocks_03_5: 5841741415096292792
+      Water Rocks_03_6: -7922372713123978414
+      Water Rocks_03_7: 6028601112171070085
+      Water Rocks_03_8: 1974184129167499262
+      Water Rocks_03_9: -1311854578901025984
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

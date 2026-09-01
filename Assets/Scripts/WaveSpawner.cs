@@ -1,8 +1,6 @@
 using UnityEngine;
-
 using System.Collections;
 using System.Collections.Generic;
-
 
 public class WaveSpawner : MonoBehaviour
 {
@@ -20,6 +18,9 @@ public class WaveSpawner : MonoBehaviour
     public Transform[] spawnPoints;
     public float timeBetweenWaves = 5f;
 
+    [Header("Referencias")]
+    [SerializeField] private VictoryManager victoryManager;
+
     private int currentWaveIndex = 0;
 
     private void Start()
@@ -29,9 +30,11 @@ public class WaveSpawner : MonoBehaviour
 
     private IEnumerator StartNextWave()
     {
+        // 1. Si se completaron todas las oleadas, activa la victoria
         if (currentWaveIndex >= waves.Count)
         {
             Debug.Log("¡Todas las rondas completadas!");
+            TriggerVictory();
             yield break;
         }
 
@@ -40,20 +43,20 @@ public class WaveSpawner : MonoBehaviour
 
         Wave currentWave = waves[currentWaveIndex];
 
-        // 1. Spawnea todos los enemigos correspondientes a la ronda
+        // 2. Spawnea todos los enemigos correspondientes a la ronda
         for (int i = 0; i < currentWave.count; i++)
         {
             SpawnEnemy(currentWave.enemyPrefab);
             yield return new WaitForSeconds(currentWave.spawnInterval);
         }
 
-        // 2. Espera a que no quede NINGÚN enemigo vivo para pasar a la siguiente ronda
+        // 3. Espera a que no quede NINGÚN enemigo vivo para continuar
         while (GameObject.FindGameObjectsWithTag("Enemy").Length > 0)
         {
             yield return new WaitForSeconds(1f);
         }
 
-        // 3. Incrementa el índice de ronda e inicia la siguiente
+        // 4. Incrementa el índice de ronda e inicia la siguiente
         currentWaveIndex++;
         StartCoroutine(StartNextWave());
     }
@@ -67,5 +70,17 @@ public class WaveSpawner : MonoBehaviour
         Transform selectedPoint = spawnPoints[randomIndex];
 
         Instantiate(enemyPrefab, selectedPoint.position, Quaternion.identity);
+    }
+
+    private void TriggerVictory()
+    {
+        if (victoryManager != null)
+        {
+            victoryManager.ShowVictoryScreen();
+        }
+        else
+        {
+            FindFirstObjectByType<VictoryManager>()?.ShowVictoryScreen();
+        }
     }
 }

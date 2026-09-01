@@ -5,19 +5,25 @@ public class Enemy : MonoBehaviour
     [Header("Estadísticas del Enemigo")]
     [SerializeField] private float speed = 3f;
     [SerializeField] private float maxHealth = 50f;
-    [SerializeField] private float xpReward = 25f; // <--- Nueva variable para la XP otorgada
+    [SerializeField] private float xpReward = 25f;
 
     [Header("Ataque al Jugador")]
     [SerializeField] private float attackDamage = 10f;
-    [SerializeField] private float attackCooldown = 1f; // Tiempo en segundos entre cada golpe
+    [SerializeField] private float attackCooldown = 1f;
     private float lastAttackTime;
+
+    [Header("Animación y Muerte")]
+    [SerializeField] private float deathAnimationDuration = 2.0f; // Tiempo de espera para la animación
 
     [Header("UI (Opcional)")]
     [SerializeField] private UnityEngine.UI.Slider healthBar;
 
     private float currentHealth;
+    private bool isDead = false; // Control para no morir varias veces
     private Transform playerTransform;
     private SpriteRenderer spriteRenderer;
+    private Animator animator;
+    private Collider2D enemyCollider;
 
     private void Start()
     {
@@ -30,6 +36,8 @@ public class Enemy : MonoBehaviour
         }
 
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
+        enemyCollider = GetComponent<Collider2D>();
 
         // Busca al Player automáticamente en la escena
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -41,6 +49,9 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+        // Si está muerto, detiene el movimiento
+        if (isDead) return;
+
         if (playerTransform != null)
         {
             MoveTowardsPlayer();
@@ -49,32 +60,32 @@ public class Enemy : MonoBehaviour
 
     private void MoveTowardsPlayer()
     {
-        // Movimiento hacia la posición del jugador
         transform.position = Vector2.MoveTowards(
             transform.position,
             playerTransform.position,
             speed * Time.deltaTime
         );
 
-        // Voltear el sprite según la posición del jugador
         if (spriteRenderer != null)
         {
             spriteRenderer.flipX = playerTransform.position.x < transform.position.x;
         }
     }
 
-    // Primer impacto al chocar los colliders
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (isDead) return;
+
         if (collision.gameObject.CompareTag("Player"))
         {
             TryAttack(collision.gameObject);
         }
     }
 
-    // Mantiene el daño si el enemigo sigue pegado/empujando al jugador
     private void OnCollisionStay2D(Collision2D collision)
     {
+        if (isDead) return;
+
         if (collision.gameObject.CompareTag("Player"))
         {
             TryAttack(collision.gameObject);
@@ -83,7 +94,6 @@ public class Enemy : MonoBehaviour
 
     private void TryAttack(GameObject playerObj)
     {
-        // Solo ataca si ya pasó el tiempo de cooldown desde el último golpe
         if (Time.time >= lastAttackTime + attackCooldown)
         {
             PlayerHealth player = playerObj.GetComponent<PlayerHealth>();
@@ -97,6 +107,8 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
+        if (isDead) return;
+
         currentHealth -= amount;
 
         if (healthBar != null)
@@ -112,7 +124,9 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
-        // 1. Otorga la experiencia al Player antes de morir
+        isDead = true;
+
+        // 1. Otorga la experiencia al Player
         if (playerTransform != null)
         {
             PlayerXP playerXP = playerTransform.GetComponent<PlayerXP>();
@@ -122,7 +136,25 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        // 2. Destruye al enemigo
-        Destroy(gameObject);
+        // 2. Desactiva colisiones para que no bloquee ni haga daño mientras muere
+        if (enemyCollider != null)
+        {
+            enemyCollider.enabled = false;
+        }
+
+        // 3. Oculta la barra de vida si existe
+        if (healthBar != null)
+        {
+            healthBar.gameObject.SetActive(false);
+        }
+
+        // 4. Activa el Trigger de animación de muerte
+        if (animator != null)
+        {
+            animator.SetTrigger("IsDead"); // Reemplaza "Die" por el nombre exacto de tu Trigger en el Animator
+        }
+
+        // 5. Destruye al enemigo tras esperar la duración de la animación
+        Destroy(gameObject, deathAnimationDuration);
     }
 }
