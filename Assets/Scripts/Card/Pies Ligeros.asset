@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86fc6d494d3a26c448d883fded441325, type: 3}
+  m_Name: Pies Ligeros
+  m_EditorClassIdentifier: 
+  cardName: Pies ligeros
+  description: "Da\xF1o: 0%\nSpeed: +25%\nHealth: -10%"
+  icon: {fileID: -8588423121523667747, guid: beeb70f1fcb9e5d44929a1935957b5c6, type: 3}
+  damageMultiplier: 1
+  speedMultiplier: 1.25
+  healthMultiplier: 0.9

@@ -5,6 +5,7 @@ public class Enemy : MonoBehaviour
     [Header("Estadísticas del Enemigo")]
     [SerializeField] private float speed = 3f;
     [SerializeField] private float maxHealth = 50f;
+    [SerializeField] private float xpReward = 25f; // <--- Nueva variable para la XP otorgada
 
     [Header("Ataque al Jugador")]
     [SerializeField] private float attackDamage = 10f;
@@ -111,6 +112,17 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
+        // 1. Otorga la experiencia al Player antes de morir
+        if (playerTransform != null)
+        {
+            PlayerXP playerXP = playerTransform.GetComponent<PlayerXP>();
+            if (playerXP != null)
+            {
+                playerXP.AddXP(xpReward);
+            }
+        }
+
+        // 2. Destruye al enemigo
         Destroy(gameObject);
     }
 }

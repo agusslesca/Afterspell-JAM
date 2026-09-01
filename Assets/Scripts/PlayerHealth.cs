@@ -17,28 +17,33 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = maxHealth;
 
         // Configuración inicial de la barra de vida
-        if (healthBar != null)
-        {
-            healthBar.maxValue = maxHealth;
-            healthBar.value = currentHealth;
-        }
+        UpdateHealthUI();
     }
 
-    // Método para recibir daño desde otros scripts (o por colisión)
+    // Método que llaman las cartas de upgrade para modificar la vida máxima
+    public void ApplyHealthMultiplier(float multiplier)
+    {
+        float oldMaxHealth = maxHealth;
+
+        // Modifica la vida máxima (ej: 100 * 1.2 = 120)
+        maxHealth *= multiplier;
+
+        // Aumenta la vida actual proporcionalmente para no quedar con la barra vacía
+        currentHealth *= multiplier;
+
+        UpdateHealthUI();
+
+        Debug.Log($"[CARTA APLICADA] Vida Máxima anterior: {oldMaxHealth} -> Nueva Vida Máxima: {maxHealth}");
+    }
+
     public void TakeDamage(float damageAmount)
     {
         if (isDead) return;
 
         currentHealth -= damageAmount;
-
-        // Limitar la vida entre 0 y el máximo
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
 
-        // Actualizar el Slider
-        if (healthBar != null)
-        {
-            healthBar.value = currentHealth;
-        }
+        UpdateHealthUI();
 
         Debug.Log("El jugador recibió " + damageAmount + " de daño. Vida restante: " + currentHealth);
 
@@ -48,7 +53,6 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    // Método opcional para curarse
     public void Heal(float amount)
     {
         if (isDead) return;
@@ -56,10 +60,29 @@ public class PlayerHealth : MonoBehaviour
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
 
+        UpdateHealthUI();
+    }
+
+    private void UpdateHealthUI()
+    {
         if (healthBar != null)
         {
+            healthBar.maxValue = maxHealth;
             healthBar.value = currentHealth;
         }
+    }
+
+    public void HealPercentage(float percentage)
+    {
+        if (isDead) return;
+
+        float healAmount = maxHealth * percentage;
+        currentHealth += healAmount;
+        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+
+        UpdateHealthUI();
+
+        Debug.Log($"[CARTA APLICADA] Curación del {percentage * 100}% (+{healAmount} HP). Vida actual: {currentHealth}/{maxHealth}");
     }
 
     private void Die()
@@ -67,17 +90,13 @@ public class PlayerHealth : MonoBehaviour
         isDead = true;
         Debug.Log("¡El Jugador ha muerto!");
 
-        // Desactivar el movimiento o reiniciar la escena aquí
-        // Opcional: Ocultar el personaje
         gameObject.SetActive(false);
     }
 
-    // Detección de daño por toque continuo o impacto directo de enemigos
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Enemy"))
         {
-            // Quita 10 de daño al tocar un esqueleto
             TakeDamage(10f);
         }
     }
